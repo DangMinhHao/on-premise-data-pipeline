@@ -1,0 +1,34 @@
+services:
+  # Postgres DB
+  oltb-db:
+    image: postgres:15
+    container_name: oltp_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./docker/db/oltp_schema.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - POSTGRES_USER=oltb
+      - POSTGRES_PASSWORD=oltb
+      - POSTGRES_DB=oltb
+    networks:
+      - default
+
+  # Superset
+  superset:
+    build: 
+      context: ./docker/superset
+      dockerfile: Dockerfile
+    container_name: superset 
+    ports: 
+      - "8080:8088"
+    environment:
+    - SUPERSET_SECRET_KEY=AWhjVghhJKHvgF
+    - ADMIN_USERNAME=admin
+    - ADMIN_EMAIL=admin@superset.com
+    - ADMIN_PASSWORD=admin
+    networks:
+      - default
+
+networks:
+  default:
