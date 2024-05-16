@@ -1,6 +1,6 @@
 from .FakerGeneratorInterface import FakerGeneratorInterface
 from ETLPipeline import PostgresDatabaseConnection
-from faker import Faker
+# from faker import Faker
 import random
 
 class UserGenerator(FakerGeneratorInterface):
@@ -23,5 +23,5 @@ class UserGenerator(FakerGeneratorInterface):
             row_count = int(cur.fetchone()[0]) * 1.0
             return round(rate * row_count)
         
-    def update(self) -> int:
+    # def update(self) -> int:
         
