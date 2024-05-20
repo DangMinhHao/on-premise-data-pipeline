@@ -7,10 +7,11 @@ services:
       - "5432:5432"
     volumes:
       - ./docker/db/oltp_schema.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./docker/db/data:/var/lib/postgresql/data:rw
     environment:
-      - POSTGRES_USER=oltb
-      - POSTGRES_PASSWORD=oltb
-      - POSTGRES_DB=oltb
+      - POSTGRES_USER=oltp
+      - POSTGRES_PASSWORD=oltp
+      - POSTGRES_DB=oltp
 
   # Superset
   superset:

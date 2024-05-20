@@ -1,0 +1,1 @@
+There are 7 new transactions and their ids: ['KB450761', 'SZ267706', 'SP070455', 'LP631698', 'RS180283', 'EN616253', 'AQ297446']

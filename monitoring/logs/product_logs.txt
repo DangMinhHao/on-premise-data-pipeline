@@ -1,0 +1,1 @@
+There are 4 updated products and their ids: ['BC-R205', 'BK-M18B-42', 'SH-W890-L', 'FR-R72R-52']
