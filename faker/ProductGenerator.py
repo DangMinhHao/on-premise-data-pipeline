@@ -1,8 +1,8 @@
 from ETLPipeline import PostgresDatabaseConnection
 from FakerGeneratorInterface import FakerGeneratorInterface
+from ETLPipeline.utils.logger import logger
 from faker import Faker
 import random
-import logging
 
 class ProductGenerator(FakerGeneratorInterface):
     def __init__(self, connection: PostgresDatabaseConnection):
@@ -20,6 +20,7 @@ class ProductGenerator(FakerGeneratorInterface):
         pass
         
     def update(self, updated_row_count: int) -> str:
+        logger.info("Start to update products unit price...")
         cur_manager = self.conn.connect()
         faker = Faker()
         updated_products = []
@@ -34,9 +35,14 @@ class ProductGenerator(FakerGeneratorInterface):
                 unit_price = round(records[random_row][2] - (records[random_row][2] * random_rate), 2)
                 cur.execute(f"UPDATE {self.conn.database}.public.products SET unit_price = {unit_price} WHERE id = '{id}';")
                 updated_products.append(id)
-        print(updated_products)
-        logger = logging.getLogger(__name__)
+        print(f"There are {updated_row_count} updated products and their ids: {updated_products}")
         return logger.info("Product unit price is updated!")
     
     def insert(self, inserted_row_count: int) -> str:
         pass
+
+if __name__ == "__main__":
+    connection = PostgresDatabaseConnection("localhost", 5432, "oltp", "oltp", "oltp")
+    product_generator = ProductGenerator(connection)
+    no_updated_row = product_generator.numberUpdatedRecord()
+    product_generator.update(no_updated_row)

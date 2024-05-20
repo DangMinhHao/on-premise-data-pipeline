@@ -1,10 +1,10 @@
 from FakerGeneratorInterface import FakerGeneratorInterface
 from ETLPipeline import PostgresDatabaseConnection
+from ETLPipeline.utils.logger import logger
 from faker import Faker
 from datetime import datetime
 import random
 import string
-import logging
 
 class UserGenerator(FakerGeneratorInterface):
     def __init__(self, connection: PostgresDatabaseConnection):
@@ -27,6 +27,7 @@ class UserGenerator(FakerGeneratorInterface):
             return round(rate * row_count)
         
     def update(self, updated_row_count: int) -> str:
+        logger.info("Start to update users email...")
         cur_manager = self.conn.connect()
         with cur_manager as cur:
             cur.execute(f"SELECT * FROM {self.conn.database}.public.users;")
@@ -40,11 +41,11 @@ class UserGenerator(FakerGeneratorInterface):
                 email = faker.email()
                 cur.execute(f"UPDATE {self.conn.database}.public.users SET email = '{email}' WHERE id = '{id}';")
                 updated_id.append(id)
-        print(updated_id)
-        logger = logging.getLogger(__name__)
+        print(f"There are {updated_row_count} updated users and their ids: {updated_id}")
         return logger.info("User email is updated!")
     
     def insert(self, inserted_row_count: int) -> str:
+        logger.info("Start to generate new users...")
         cur_manager = self.conn.connect()
         faker = Faker()
         values = []
@@ -58,5 +59,12 @@ class UserGenerator(FakerGeneratorInterface):
                 values.append(str(record))
             query = f"INSERT INTO {self.conn.database}.public.users (id, name, email, created_at) VALUES {', '.join(values)};"
             cur.execute(query)
-        logger = logging.getLogger(__name__)
         return logger.info("New users are inserted!")
+    
+if __name__ == "__main__":
+    connection = PostgresDatabaseConnection("localhost", 5432, "oltp", "oltp", "oltp")
+    user_generator = UserGenerator(connection)
+    no_updated_row = user_generator.numberUpdatedRecord()
+    no_inserted_row = user_generator.numberInsertedRecord()
+    user_generator.update(no_updated_row)
+    user_generator.insert(no_inserted_row)
