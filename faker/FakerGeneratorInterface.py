@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from ETLPipeline import PostgresDatabaseConnection
 
 class FakerGeneratorInterface(ABC):
     @abstractmethod
