@@ -1,3 +1,3 @@
 from .PostgresConnection import PostgresDatabaseConnection
-
-__all__ = ["PostgresDatabaseConnection"]
+from .logger import logger
+__all__ = ["PostgresDatabaseConnection", "logger"]
